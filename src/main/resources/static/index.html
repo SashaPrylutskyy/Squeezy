@@ -49,9 +49,9 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.suffix) {
+                    if (data.success) {
                         let current_url = window.location.href;
-                        let squeezed_url = current_url + "API/" + data.suffix;
+                        let squeezed_url = current_url + "API/" + data.message;
 
                         gatherParticles('green').then(() => {
                             notification.textContent = squeezed_url;
@@ -71,9 +71,9 @@
                             }).showToast();
                             notification.style.display = 'block';
                         });
-                    } if (data.error) {
+                    } else {
                         gatherParticles("red").then(() => {
-                            notification.textContent = "Error: " + data.error;
+                            notification.textContent = "Error: " + data.message;
                             notification.style.display = 'block';
                         });
                     }

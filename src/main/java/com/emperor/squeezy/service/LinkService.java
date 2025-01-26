@@ -1,5 +1,6 @@
 package com.emperor.squeezy.service;
 
+import com.emperor.squeezy.model.ApiResponse;
 import com.emperor.squeezy.model.Link;
 import com.emperor.squeezy.repository.LinkRepository;
 import com.emperor.squeezy.utility.SuffixGenerator;
@@ -17,19 +18,43 @@ public class LinkService {
         this.repo = repo;
     }
 
-    public Map<String, String> save(Link link) {
-        Map<String, String> response = new HashMap<>();
-
+    public ApiResponse createLink(Link link) {
         try {
             String suffix = SuffixGenerator.generate();
             link.setSuffix(suffix);
             repo.save(link);
 
-            response.put("suffix", suffix);
+            return new ApiResponse(true, suffix);
         } catch (Exception e) {
-            response.put("error", e.getMessage());
+            return new ApiResponse(false, e.getMessage());
         }
-        return response;
+    }
+
+    public String getRedirectUrl(String suffix) {
+        Link link = getLink(suffix);
+
+        if (link == null) {
+            return "/404";
+        } else if (link.getPassword().isEmpty()) {
+            return link.getUrl();
+        } else {
+            return "/validate?suffix=" + suffix;
+        }
+
+    }
+
+    public ApiResponse isPasswordValid(Link link) {
+        //suffix & password
+        String suffix = link.getSuffix();
+        String password = link.getPassword();
+
+        Link foundLink = getLink(suffix, password);
+
+        if (foundLink != null) {
+            return new ApiResponse(true, foundLink.getUrl());
+        } else {
+            return new ApiResponse(false, "Invalid password");
+        }
     }
 
     public Link getLink(String suffix) {

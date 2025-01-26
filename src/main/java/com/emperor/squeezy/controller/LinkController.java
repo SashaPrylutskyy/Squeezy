@@ -1,16 +1,14 @@
 package com.emperor.squeezy.controller;
 
+import com.emperor.squeezy.model.ApiResponse;
 import com.emperor.squeezy.model.Link;
 import com.emperor.squeezy.service.LinkService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class LinkController {
@@ -27,53 +25,32 @@ public class LinkController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Map<String, String>> create(@RequestBody Link link) {
-        Map<String, String> response = service.save(link);
+    public ResponseEntity<ApiResponse> create(@RequestBody Link link) {
+        ApiResponse response = service.createLink(link);
 
-        if (response.containsKey("error")) {
-            return ResponseEntity.badRequest().body(response);
-        } else {
-            return ResponseEntity.ok(response);
-        }
+        return response.isSuccess() ?
+                ResponseEntity.ok(response) :
+                ResponseEntity.badRequest().body(response);
     }
 
     @GetMapping("/API/{suffix}")
-    public void redirect(@PathVariable String suffix, HttpServletResponse response) throws IOException {
-        Link link = service.getLink(suffix);
-
-        if (link == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Link not found");
-            return;
-        }
-        if (link.getPassword().isEmpty()) {
-            response.sendRedirect(link.getUrl());
-        } else {
-            response.sendRedirect("/validate?suffix=" + suffix);
-        }
+    public void redirect(@PathVariable String suffix,
+                         HttpServletResponse response) throws IOException {
+        String redirectUrl = service.getRedirectUrl(suffix);
+        response.sendRedirect(redirectUrl);
     }
 
     @GetMapping("/validate")
-    public String validate(@RequestParam String suffix, Model model) {
-        model.addAttribute("suffix", suffix);
+    public String validate(@RequestParam String suffix) {
         return "validate.html";
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<Map<String, String>> passwordValidation(
-            @RequestBody Link model) throws IOException {
+    public ResponseEntity<ApiResponse> validation(@RequestBody Link link) {
+        ApiResponse response = service.isPasswordValid(link);
 
-        Map<String, String> map = new HashMap<>();
-        String suffix = model.getSuffix();
-        String password = model.getPassword();
-
-        Link link = service.getLink(suffix, password);
-        System.err.println(link);
-
-        if (link != null) {
-            map.put("url", link.getUrl());
-        } else {
-            map.put("error", "invalid password");
-        }
-        return ResponseEntity.badRequest().body(map);
+        return response.isSuccess() ?
+                ResponseEntity.ok(response) :
+                ResponseEntity.badRequest().body(response);
     }
 }

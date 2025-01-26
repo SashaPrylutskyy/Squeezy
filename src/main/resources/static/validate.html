@@ -43,11 +43,11 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.url) {
-                        window.location.replace(data.url)
-                    } if (data.error) {
+                    if (data.success) {
+                        window.location.replace(data.message)
+                    } else {
                         gatherParticles("red").then(() => {
-                            notification.textContent = "Error: " + data.error;
+                            notification.textContent = "Error: " + data.message;
                             notification.style.display = 'block';
                         });
                     }
