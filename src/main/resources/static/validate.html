@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="css/particles.css">
+    <link rel="stylesheet" href="css/form.css">
+    <title>Validate Link</title>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="form-container">
+    <h2>Validate access</h2>
+    <form id="validateForm">
+        <div class="form-group">
+            <input type="password" id="password" name="password" placeholder="Enter Password" required>
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+    <div id="notification" class="notification"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="js/particleGenerator.js"></script>
+<script src="js/explosion.js"></script>
+<script src="js/particleInteraction.js"></script>
+
+<script>
+    let form = document.getElementById("validateForm");
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const password = document.getElementById('password').value;
+        const notification = document.getElementById('notification');
+        const urlParams = new URLSearchParams(window.location.search);
+        const suffix = urlParams.get('suffix');
+
+        if (password) {
+            fetch('/validate/'+suffix+"/"+password, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // body: JSON.stringify({suffix: suffix, password: password})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        window.location.replace(data.url)
+                    } if (data.error) {
+                        gatherParticles("red").then(() => {
+                            notification.textContent = "Error: " + data.error;
+                            notification.style.display = 'block';
+                        });
+                    }
+                })
+                .catch(error => gatherParticles("red"));
+            form.reset();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/particles.css">
+    <link rel="stylesheet" href="css/form.css">
+    <title>Squeezy</title>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="form-container">
+    <h2>SQUEEZE AN URL</h2>
+    <form id="addForm">
+        <div class="form-group">
+            <label for="url">URL</label>
+            <input type="url" id="url" name="url" placeholder="Enter URL" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password is optional</label>
+            <input type="password" id="password" name="password" placeholder="Enter Password">
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+    <div id="notification" class="notification"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="js/particleGenerator.js"></script>
+<script src="js/explosion.js"></script>
+<script src="js/particleInteraction.js"></script>
+<script>
+    document.getElementById('addForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const url = document.getElementById('url').value;
+        const password = document.getElementById('password').value;
+        const notification = document.getElementById('notification');
+
+        if (url) {
+            fetch("/create", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({url: url, password: password})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.suffix) {
+                        let current_url = window.location.href;
+                        let squeezed_url = current_url + "API/" + data.suffix;
+
+                        gatherParticles('green').then(() => {
+                            notification.textContent = squeezed_url;
+                            navigator.clipboard.writeText(squeezed_url);
+                            Toastify({
+                                text: "Link copied to clipboard",
+                                duration: 5000,
+                                style: {
+                                    position: 'fixed',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    backdropFilter: 'blur(5px)',
+                                    borderRadius: '10px',
+                                    border: '1px solid #5fac65',
+                                    color: '#5fac65',
+                                    padding: '1rem',
+                                }
+                            }).showToast();
+                            notification.style.display = 'block';
+                        });
+                    } if (data.error) {
+                        gatherParticles("red").then(() => {
+                            notification.textContent = "Error: " + data.error;
+                            notification.style.display = 'block';
+                        });
+                    }
+                })
+                .catch(error => gatherParticles("red"));
+            document.getElementById('addForm').reset();
+        }
+    });
+
+    document.getElementById("url").addEventListener('input', function(event) {
+        let value = event.target.value;
+        let trimmedValue = value.trimStart();
+
+        if (trimmedValue !== value) {
+            event.target.value = trimmedValue;
+        }
+    });
+</script>
+
+</body>
+</html>
