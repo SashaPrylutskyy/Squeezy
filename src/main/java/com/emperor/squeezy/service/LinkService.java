@@ -32,11 +32,11 @@ public class LinkService {
         return response;
     }
 
-    public Link getLinkBySuffix(String suffix) {
+    public Link getLink(String suffix) {
         return repo.findLinkBySuffix(suffix);
     }
 
-    public Link findLinkBySuffixAndPassword(String suffix, String password) {
+    public Link getLink(String suffix, String password) {
         return repo.findLinkBySuffixAndPassword(suffix, password);
     }
 }

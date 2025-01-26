@@ -17,11 +17,6 @@ public class Link {
 
     }
 
-    public Link(String url, String password) {
-        this.url = url;
-        this.password = password;
-    }
-
     public Link(String url, String suffix, String password) {
         this.url = url;
         this.suffix = suffix;

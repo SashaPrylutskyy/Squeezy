@@ -39,7 +39,7 @@ public class LinkController {
 
     @GetMapping("/API/{suffix}")
     public void redirect(@PathVariable String suffix, HttpServletResponse response) throws IOException {
-        Link link = service.getLinkBySuffix(suffix);
+        Link link = service.getLink(suffix);
 
         if (link == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Link not found");
@@ -58,19 +58,22 @@ public class LinkController {
         return "validate.html";
     }
 
-    @PostMapping("/validate/{suffix}/{password}")
+    @PostMapping("/validate")
     public ResponseEntity<Map<String, String>> passwordValidation(
-            @PathVariable String suffix,
-            @PathVariable String password) throws IOException {
+            @RequestBody Link model) throws IOException {
 
         Map<String, String> map = new HashMap<>();
-        Link link = service.findLinkBySuffixAndPassword(suffix, password);
+        String suffix = model.getSuffix();
+        String password = model.getPassword();
+
+        Link link = service.getLink(suffix, password);
+        System.err.println(link);
+
         if (link != null) {
             map.put("url", link.getUrl());
         } else {
             map.put("error", "invalid password");
         }
-
         return ResponseEntity.badRequest().body(map);
     }
 }

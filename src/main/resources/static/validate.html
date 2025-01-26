@@ -2,7 +2,7 @@
 <head>
     <link rel="stylesheet" href="css/particles.css">
     <link rel="stylesheet" href="css/form.css">
-    <title>Validate Link</title>
+    <title>Squeezy validate form</title>
 </head>
 <body>
 
@@ -36,10 +36,10 @@
         const suffix = urlParams.get('suffix');
 
         if (password) {
-            fetch('/validate/'+suffix+"/"+password, {
+            fetch('/validate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                // body: JSON.stringify({suffix: suffix, password: password})
+                body: JSON.stringify({suffix: suffix, password: password})
             })
                 .then(response => response.json())
                 .then(data => {
