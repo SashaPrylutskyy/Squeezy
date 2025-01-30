@@ -3,11 +3,9 @@ package com.emperor.squeezy.service;
 import com.emperor.squeezy.model.ApiResponse;
 import com.emperor.squeezy.model.Link;
 import com.emperor.squeezy.repository.LinkRepository;
+import com.emperor.squeezy.utility.PasswordHashingUtil;
 import com.emperor.squeezy.utility.SuffixGenerator;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class LinkService {
@@ -22,6 +20,7 @@ public class LinkService {
         try {
             String suffix = SuffixGenerator.generate();
             link.setSuffix(suffix);
+            link.setPassword(PasswordHashingUtil.hash(link.getPassword()));
             repo.save(link);
 
             return new ApiResponse(true, suffix);
