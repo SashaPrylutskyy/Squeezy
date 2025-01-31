@@ -6,7 +6,8 @@ public class PasswordHashingUtil {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public static String hash(String password) {
-        return encoder.encode(password);
+//        return encoder.encode(password);
+        return password;
     }
 
     public static boolean verity(String password, String password_hash) {
