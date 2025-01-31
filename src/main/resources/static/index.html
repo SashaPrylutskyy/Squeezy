@@ -15,7 +15,7 @@
     <h2>Squeeze an URL</h2>
     <form id="addForm">
         <div class="form-group">
-            <input type="text" id="url" name="url" placeholder="Enter URL">
+            <input type="url" id="url" name="url" placeholder="Enter URL">
             <button type="submit" class="submit-btn" id="submitButton" disabled>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="12" r="10" stroke="#1b1b1d" stroke-width="4" fill="none" />
@@ -30,62 +30,7 @@
     <div id="notification" class="notification"></div>
 </div>
 
-<script src="js/submitButton.js"></script>
-<script>
-    document.getElementById('addForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const url = document.getElementById('url').value;
-        const password = document.getElementById('password').value;
-        const notification = document.getElementById('notification');
-
-        if (url) {
-            fetch("/create", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({url: url, password: password})
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        let current_url = window.location.href;
-                        let squeezed_url = current_url + "api/" + data.message;
-
-                        notification.textContent = squeezed_url;
-                        navigator.clipboard.writeText(squeezed_url);
-                        notification.classList.add("success");
-                        notification.style.display = 'block';
-                    } else {
-                        notification.textContent = "Error: " + data.message;
-                        notification.classList.add("error");
-                        notification.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    notification.textContent = "Oops! Something went wrong.";
-                    notification.classList.add("error");
-                    notification.style.display = 'block';
-                });
-            document.getElementById('addForm').reset();
-
-            submitButton.disabled = true;
-            passwordContainer.classList.add('hidden');
-            urlInputGroup.style.borderRadius = '15px';
-            submitButton.classList.remove('move-back');
-        }
-    });
-
-    document.getElementById("url").addEventListener('input', function(event) {
-        let value = event.target.value;
-        let trimmedValue = value.trimStart();
-
-        if (trimmedValue !== value) {
-            event.target.value = trimmedValue;
-        }
-    });
-</script>
-
+<script src="js/validationMainPage.js"></script>
+<script src="js/mainPage.js"></script>
 </body>
 </html>

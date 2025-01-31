@@ -1,7 +1,8 @@
 <!DOCTYPE html>
+<html lang="eng">
 <head>
-    <link rel="stylesheet" href="css/particles.css">
     <link rel="stylesheet" href="css/form.css">
+    <link rel="stylesheet" href="css/validatePage.css">
     <title>Squeezy validate form</title>
 </head>
 <body>
@@ -13,49 +14,18 @@
     <form id="validateForm">
         <div class="form-group">
             <input type="password" id="password" name="password" placeholder="Enter Password" required>
+            <button type="submit" class="submit-btn password-container" id="submitButton" disabled>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="#1b1b1d" stroke-width="4" fill="none" />
+                    <path d="M8 12H16M16 12L12 8M16 12L12 16" stroke="#1b1b1d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
         </div>
-        <button type="submit" class="submit-btn">Submit</button>
     </form>
-    <div id="notification" class="notification"></div>
+    <div id="notification" class="notification error"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<script src="js/particleGenerator.js"></script>
-<script src="js/explosion.js"></script>
-<script src="js/particleInteraction.js"></script>
-
-<script>
-    let form = document.getElementById("validateForm");
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const password = document.getElementById('password').value;
-        const notification = document.getElementById('notification');
-        const urlParams = new URLSearchParams(window.location.search);
-        const suffix = urlParams.get('suffix');
-
-        if (password) {
-            fetch('/validate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({suffix: suffix, password: password})
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.replace(data.message)
-                    } else {
-                        gatherParticles("red").then(() => {
-                            notification.textContent = "Error: " + data.message;
-                            notification.style.display = 'block';
-                        });
-                    }
-                })
-                .catch(error => gatherParticles("red"));
-            form.reset();
-        }
-    });
-</script>
+<script src="js/validationValidatePage.js"></script>
+<script src="js/validatePage.js"></script>
 </body>
 </html>
