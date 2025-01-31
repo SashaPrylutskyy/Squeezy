@@ -33,7 +33,7 @@ public class LinkController {
                 ResponseEntity.badRequest().body(response);
     }
 
-    @GetMapping("/API/{suffix}")
+    @GetMapping("/api/{suffix}")
     public void redirect(@PathVariable String suffix,
                          HttpServletResponse response) throws IOException {
         String redirectUrl = service.getRedirectUrl(suffix);

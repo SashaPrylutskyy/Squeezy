@@ -4,7 +4,7 @@ const submitButton = document.getElementById('submitButton');
 const passwordContainer = document.querySelector('.password-container');
 const urlInputGroup = document.querySelector('.form-group #url');
 
-const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*\/?$/;
+const urlPattern = /^(https?:\/\/)?(www\.)?([\p{L}0-9.-]+|\blocalhost\b)(\.[a-zA-Z]{2,63})?(:\d{1,5})?(\/[^\s]*)?$/u;
 
 urlField.addEventListener('input', function() {
     if (urlPattern.test(urlField.value.trim())) {

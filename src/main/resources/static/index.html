@@ -27,16 +27,11 @@
             <input type="password" id="password" name="password" placeholder="Enter Password">
         </div>
     </form>
-    <div id="notification" class="notification success">
-        www.squeeze/api/H3Xrk20i
-    </div>
+    <div id="notification" class="notification"></div>
 </div>
 
 <script src="js/submitButton.js"></script>
 <script>
-    const passwordContainer = document.querySelector('.password-container');
-    const urlInputGroup = document.querySelector('.form-group #url');
-
     document.getElementById('addForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -54,27 +49,31 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    submitButton.disabled = true;
-                    passwordContainer.classList.add('hidden');
-                    urlInputGroup.style.borderRadius = '15px';
-
                     if (data.success) {
                         let current_url = window.location.href;
                         let squeezed_url = current_url + "api/" + data.message;
 
                         notification.textContent = squeezed_url;
                         navigator.clipboard.writeText(squeezed_url);
+                        notification.classList.add("success");
                         notification.style.display = 'block';
                     } else {
                         notification.textContent = "Error: " + data.message;
+                        notification.classList.add("error");
                         notification.style.display = 'block';
                     }
                 })
                 .catch(error => {
-                    notification.textContent = "Error: " + error;
+                    notification.textContent = "Oops! Something went wrong.";
+                    notification.classList.add("error");
                     notification.style.display = 'block';
                 });
             document.getElementById('addForm').reset();
+
+            submitButton.disabled = true;
+            passwordContainer.classList.add('hidden');
+            urlInputGroup.style.borderRadius = '15px';
+            submitButton.classList.remove('move-back');
         }
     });
 
