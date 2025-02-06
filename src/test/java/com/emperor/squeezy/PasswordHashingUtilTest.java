@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 
 public class PasswordHashingUtilTest {
 
-    /*@Test
+    @Test
     void verifyHash() {
         String password = "EasyPassword";
         String password_hash = PasswordHashingUtil.hash(password);
         boolean isValid = PasswordHashingUtil.verity(password, password_hash);
 
         assert(isValid);
-    }*/
+    }
 
 }
